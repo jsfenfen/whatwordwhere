@@ -21,7 +21,7 @@ flexible_parser = etree.XMLParser(encoding='utf-8', recover=True)
 file_name = "58-1723645_990_201204"
 
 file_path = "test_hocr/" + file_name + ".html"
-parser = document_parser(file_path)
+parser = document_parser(file_path, encoding='latin-1')
 
 page_num = 0
 while True:
@@ -33,10 +33,8 @@ while True:
     outfile = "display/hocr_pages/" + file_name + "p" + str(page_num) + ".html"
     #outh = open(outfile, 'w')
     page_xml = this_page.getvalue()
-    page_xml = page_xml.decode('latin-1', 'ignore').encode('utf-8')
+    #page_xml = page_xml.decode('latin-1', 'ignore').encode('utf-8')
     tree = etree.parse(StringIO(page_xml), flexible_parser)
-#    tree = etree.parse(StringIO(page_xml))
     tree.write(outfile)
-    #outh.write()
-    #outh.close()
+
     

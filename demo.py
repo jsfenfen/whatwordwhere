@@ -2,11 +2,9 @@ from document_parser import document_parser
 from parse_utils import get_words_from_page, get_words_with_lines_from_page, get_annotated_bbox
 
 
-file = "test_hocr/31-1640316_990_201206.html"
+file = "test_hocr/58-1723645_990_201204.html"
 
-parser = document_parser(file)
-
-
+parser = document_parser(file, encoding='latin-1')
 
 while True:
     this_page = parser.read_page()
