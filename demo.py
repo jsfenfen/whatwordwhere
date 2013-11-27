@@ -4,18 +4,16 @@ from parse_utils import get_words_from_page, get_words_with_lines_from_page, get
 
 file = "test_hocr/31-1640316_990_201206.html"
 
-a = document_parser(file)
+parser = document_parser(file)
 
 
 
 while True:
-    this_page = a.read_page()
+    this_page = parser.read_page()
     if not this_page:
         break
     
-    
     # READ THE PAGE AS A BUNCH OF WORDS ONLY
-    
     
     page = get_words_from_page(this_page.getvalue())
     # pages have two attributes: 'attrib' and 'words'

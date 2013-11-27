@@ -1,0 +1,192 @@
+<html>  
+    <head>  
+        <title>hOCR parse / overlay test</title>  
+        <script type="text/javascript" src="js/raphael-min.js"></script>  
+        <script type="text/javascript" src="js/jquery-1.7.2.js"></script>  
+        <style type="text/css">  
+            #wrapper {
+                position: relative;
+                padding: 0;
+                outline: 1px solid #999;
+                width: 700px;
+                height: 906px;
+            }
+            #wrapper img {
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+            #canvas_container {
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+            .info {
+                width: 700px;
+                margin-bottom: 10px;
+            }
+        </style>  
+    </head>  
+    <body>
+      <div class="info">
+      This is a display of a single page at a time from <a target="_null" href="31-1640316_990_201206.pdf">this large pdf file</a>.
+      <br>Using doc '<span id="doc_displayed"></span>'; displaying page: <span id="page_displayed"></span>
+      <br>Enter a page number to change the display <input type="text" id="page_form"></input> <input type="button" value="Go" id="load_button" />
+      
+      
+    </div>
+    <div id="wrapper">
+   	<div id='canvas_container'></div></div>
+      
+    <script type="text/javascript">
+    var paper;
+		var xmax;
+		var ymax;
+		// the raw resolution of these is 3400 x 4400 
+		
+		// todo: allow for horizontal layout
+		var display_height = 906;
+		var display_width = 700;
+		var xscale;
+		var yscale;
+	  var set;
+		var words = [];
+		
+		// set document and dir -- this eventually may be changeable by the user
+		var url_base = "hocr_pages/";
+    var this_doc = "58-1723645_990_201204";
+    
+		
+		
+		var hoverIn = function() {
+            this.attr({"stroke":'#F00',"stroke-width":1, "stroke-opacity": 1, "fill-opacity":0});
+    };
+
+    var hoverOut = function() {
+        this.attr({"stroke":'#bbb',"stroke-width":1, "stroke-opacity": 0.5, "fill-opacity":0.2});    
+    };
+    
+    
+    function parsebbox(bboxtext) {
+      bb = bboxtext.split(" ").slice(1,5);
+      return [parseInt(bb[0]), parseInt(bb[1]),parseInt(bb[2]),parseInt(bb[3])];
+    }
+    
+    function load_page(page_num) {
+      
+			
+      set = paper.set();
+      //page_num = 440;
+      hocr_url = url_base + this_doc + "p" + String(page_num) + ".html";
+      console.log("Attempting to load page: " + hocr_url);
+      // Even though the file extension is html, we want jquery to treat it as xml
+			$.ajax({
+      url: hocr_url,
+      dataType: "xml"
+      }) .fail(function() {
+      alert( "error" );
+      }).done(function(data) {
+        
+        var xmlstr = data.xml ? data.xml : (new XMLSerializer()).serializeToString(data);
+        //alert(xmlstr);
+        console.log('Load was performed.' + data + " with raw " + xmlstr);
+                  
+        divs = data.getElementsByTagName('div');
+        console.log("first div is " + String(divs[0]));
+        console.log("length of divs array is: " + String(divs.length));
+        // parse page size. 
+        attributes = divs[0].attributes;
+        thisclass = attributes.getNamedItem('class').value;
+        thisid = attributes.getNamedItem('id').value;
+        thistitle = attributes.getNamedItem('title').value;
+        // title for the whole page has more elements -- it looks like this: title='image "test.png"; bbox 0 0 3400 4400; ppageno 0'
+        thistitlebits = thistitle.split(";")
+        console.log("hOCR image src is: " + thistitlebits[0].trim())
+        thistitleelement = thistitlebits[1].trim()
+        console.log("bounding box is: '" + thistitleelement  + "'");
+        pagesize = parsebbox(thistitleelement);
+        xmax = pagesize[2];
+  		  ymax = pagesize[3];
+  		  xscale = display_width / xmax;
+  		  yscale = display_height / ymax;
+  		  console.log("xmax " + xmax + " x-scale: " + xscale);
+  		  
+        
+        if (thisclass != 'ocr_page') {
+          alert("Missing ocr_page information. Can't process. ");          
+        }
+        
+        spans = data.getElementsByTagName('span');
+        numspans = spans.length;
+        console.log('got spans: ' + spans + ' with length: ' + numspans);
+        for (var i = 0; i < numspans; i++) {
+            attributes = spans[i].attributes;
+            thisclass = attributes.getNamedItem('class').value;
+            thisid = attributes.getNamedItem('id').value;
+            thistitle = attributes.getNamedItem('title').value;
+            if (thisclass == 'ocr_word') {
+              resultarray = parsebbox(thistitle);
+              words.push({'contained_text':spans[i].textContent, 'x0':resultarray[0], 'y0':resultarray[1], 'x1':resultarray[2],  'y1':resultarray[3]})
+              //console.log('adding word ' + spans[i].textContent + ' with location ' + resultarray);
+            }
+        
+        }
+        
+        console.log("words added");
+        
+        // Plot largest first 
+        words = words.sort(function(x, y){ return (x.x1-x.x0)*(x.y1-x.y0) < (y.x1-y.x0)*(y.y1-y.y0) });
+        
+        console.log("words sorted");
+        
+        var num_lines = words.length;
+  		  for (var i = 0; i < num_lines; i++) {
+  		    topleftx = words[i].x0*xscale;
+  		    toplefty = words[i].y0*yscale;
+  		    rectwidth = (words[i].x1 - words[i].x0) * xscale;
+  		    rectheight = (words[i].y1 - words[i].y0) * yscale;
+  		    rect = paper.rect(topleftx, toplefty, rectwidth, rectheight).attr({"fill": "#b00", "title":words[i].contained_text, "fill-opacity":0.2, "stroke":'#bbb',"stroke-width":1, "stroke-opacity": 0.5});
+
+
+          rect.hover(hoverIn, hoverOut, rect, rect);
+          set.push(rect);
+  		  }
+      });
+      $( "#page_displayed" ).html(String(page_num));
+      
+      
+    }
+    
+    function button_load() {
+      // clean up the page we already loaded
+      set.remove();
+      words = [];
+      
+      new_page = $("#page_form").val()
+      new_page = new_page.replace(/ /g,"");
+      load_page(new_page);
+    }
+    
+    $(document).ready(function() { 
+      paper = new Raphael('canvas_container', display_width, display_height);
+			load_page(440);
+			
+			// document isn't changeable, so just set it here:
+			$( "#doc_displayed" ).html(this_doc);
+			
+			$( "#load_button" )
+      .bind( "click", function() {
+        button_load();
+      });
+      
+      // hack to make return act as enter
+      $("#page_form").keydown(function(event){
+        if(event.keyCode == 13){
+          button_load();
+        }
+      });
+      
+		});
+		</script>
+  </body>  
+</html>		  
