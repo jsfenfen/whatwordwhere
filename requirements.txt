@@ -1,1 +1,6 @@
+django
+psycopg2
+# postgis
+
 lxml
+
