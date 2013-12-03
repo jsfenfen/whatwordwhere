@@ -1,4 +1,6 @@
-""" lazily read an hocr document, returning pages until it's done. Pages are returned as cStringIO objects. Expects strict hocr adherence--</html> must appear on it's own line to end a page... 
+""" lazily read an hocr document, returning pages until it's done. 
+Pages are returned as cStringIO objects. Expects strict hocr adherence.
+</html> must appear on it's own line to end a page... 
 
 Also, note that some hocr that's supposed to be utf-8 is actually latin-1. 
 https://groups.google.com/forum/#!topic/tesseract-ocr/UiyIMUWMzsU
@@ -17,17 +19,21 @@ class document_parser(object):
         self.is_err = False
         self.encoding = encoding
         
-    def read_page(self):
+    def __iter__(self):
+        return self
+
+    def next(self):
+        try:
+            return self.next_document()
+        except Exception:
+            raise StopIteration
+    
+    def next_document(self):
         page_to_return = StringIO()
         end_of_page_found=False
         
         while not end_of_page_found:
-            try:
-                this_line = self.file_source.next()
-            except Exception:
-                self.is_err = True
-                return None
-                
+            this_line = self.file_source.next()
             if this_line.startswith("</html>") :
                 end_of_page_found = True
             
