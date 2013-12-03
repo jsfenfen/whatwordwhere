@@ -8,6 +8,8 @@ from django.db import connection
 from parser.document_parser import document_parser
 from parser.parse_utils import get_words_from_page
 from documents.models import Document, Page, PageWord
+from geo_utils.word_shapes import get_word_shapes
+
 
 cursor = connection.cursor()
 fields = ['page_pk', 'word', 'bbox']
@@ -17,20 +19,13 @@ def enter_words(page_pk, word_array):
     transactions_to_commit = StringIO()
     writer = csv.DictWriter(transactions_to_commit, fields, restval="", extrasaction='ignore', lineterminator='\n', delimiter=";", quoting=csv.QUOTE_ALL, quotechar='"', escapechar='\\')
     
-    
+    word_array = get_word_shapes(word_array)
     
     for word in word_array:
         text = word['text']
-        bbox_raw = word['bbox']
-        coords = bbox_raw.split()
-        p = {'xmin':coords[0], 'ymin':coords[1], 'xmax':coords[2], 'ymax':coords[3]}
-        poly_string = """POLYGON((%s %s, %s %s,%s %s,%s %s,%s %s))""" % (p['xmin'], p['ymin'], p['xmin'], p['ymax'], p['xmax'], p['ymax'], p['xmax'], p['ymin'],p['xmin'], p['ymin'] )
-        poly = GEOSGeometry(poly_string)
-        wkb = poly.hex
+        wkb = word['poly'].hex
         #print "data: %s %s %s" % (page_pk, text, wkb)
         writer.writerow({'page_pk':page_pk, 'word':text, 'bbox': wkb})
-    
-    
     
     length = transactions_to_commit.tell()
     transactions_to_commit.seek(0)

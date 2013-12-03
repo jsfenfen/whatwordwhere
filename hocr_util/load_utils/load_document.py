@@ -4,6 +4,7 @@ from parser.document_parser import document_parser
 from parser.parse_utils import get_words_from_page
 from documents.models import Document, Page, PageWord
 from load_utils.load_page import enter_words
+from geo_utils.word_shapes import get_poly_string_from_bbox
 
 from django.contrib.gis.geos import GEOSGeometry
 
@@ -17,20 +18,7 @@ def enter_page(doc, page, page_number):
     r = bbox_re.search(title)
     
     bbox_raw = r.group(1)
-    coords = bbox_raw.split()
-    p = {
-        'xmin':coords[0], 
-        'ymin':coords[1], 
-        'xmax':coords[2], 
-        'ymax':coords[3]
-    }
-    
-    
-    poly_string = """POLYGON((%s %s, %s %s,%s %s,%s %s,%s %s))""" % (
-        p['xmin'], p['ymin'], p['xmin'], p['ymax'], p['xmax'], 
-        p['ymax'], p['xmax'], p['ymin'],p['xmin'], p['ymin'] 
-    )
-    
+    poly_string = get_poly_string_from_bbox(bbox_raw)
     poly = GEOSGeometry(poly_string)
     wkb = poly.hex
     this_page, created = Page.objects.get_or_create(
