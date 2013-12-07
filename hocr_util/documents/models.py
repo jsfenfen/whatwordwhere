@@ -29,10 +29,14 @@ class Page(models.Model):
 ## alter table documents_pageword drop constraint "enforce_dims_bbox"
 ## alter table documents_pageword drop constraint "enforce_geotype_bbox"
 
+
+# Also todo: add an int for word_number based on the wordid; also possibly line number?
 class PageWord(models.Model):
     # to save time, we're not explicitly checking that page_pk is indeed a page primary key. But it should be.
     page_pk = models.IntegerField()
     word = models.CharField(max_length=755, blank=True, null=True)
+    word_num = models.IntegerField(null=True)
+    line_num = models.IntegerField(null=True)
     bbox = models.PolygonField(null=True, spatial_index=False)
     # we don't create a spatial index initially. Manage this by hand, because this will kill our inserts otherwise.
     objects = models.GeoManager()

@@ -10,7 +10,7 @@ parser = document_parser(file, encoding='latin-1')
 for this_page in parser:
     
     # READ THE PAGE AS A BUNCH OF WORDS ONLY    
-
+    """
     page = get_words_from_page(this_page.getvalue())
     # pages have two attributes: 'attrib' and 'words'
     page_attributes =  page['attrib']
@@ -18,12 +18,12 @@ for this_page in parser:
     # words have two attributes: 'text' and 'bbox'
     annotated_bbox = get_annotated_bbox(first_word['bbox'])
     print "Processing page %s" % (page_attributes)
-    print "Got first word '%s' with bounding_box %s" % (first_word['text'],  annotated_bbox)
+    print "Got first word '%s'" % (first_word)
     print "\n\n"
     
     
     # READ THE PAGE AS A HIERARCHY OF WORDS CONTAINED IN LINES
-    
+    """
     page = get_words_with_lines_from_page(this_page.getvalue())
     ## pages have two attributes: 'attrib' and 'lines'
     print page['attrib']
