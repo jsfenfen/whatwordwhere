@@ -29,6 +29,7 @@ def enter_page_words_only(doc, page, page_number):
     )
     
     page_pk = this_page.pk
+    # READ THE PAGE AS A BUNCH OF WORDS ONLY
     enter_words_only(page_pk, page['words'])
     
 def enter_page(doc, page, page_number):
@@ -60,7 +61,9 @@ def enter_document(file_path, document_id):
     for this_page in parser:
         page_count += 1
         
-        # READ THE PAGE AS A BUNCH OF WORDS ONLY
+        # READ THE PAGE AS A HIERARCHY OF LINES AND WORDS. ONLY WORDS ARE GIVEN BOUNDING BOXES HERE THOUGH
+        # THE HOCR SPEC GIVES LINES BOUNDING BOXES, SO THEY COULD BE ADDED, IT'S JUST NOT CLEAR IF THAT WOULD HELP
+        # I ASSUME THE LINE IS JUST THE CONVEX HULL OF THE WORDS, BUT DON'T KNOW THIS FOR SURE. 
         page = get_words_with_lines_from_page(this_page.getvalue())
         enter_page(this_doc, page, page_count)
 
