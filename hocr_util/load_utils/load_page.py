@@ -1,3 +1,5 @@
+""" This is a hack that uses csv to write to a cstring which is then the source of a bulk insert to postgis. """
+
 import csv
 
 from cStringIO import StringIO
