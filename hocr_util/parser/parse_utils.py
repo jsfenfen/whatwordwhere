@@ -4,8 +4,11 @@ from lxml import etree
 from lxml.etree import tostring
 from StringIO import StringIO
 
+from parse_errors import PageCountError
 
 flexible_parser = etree.XMLParser(encoding='utf-8', recover=True)
+
+
 
 # convenience method for naming which coordinates is which in the bbox. I always forget which is which.
 def get_annotated_bbox(raw_bbox_string):
@@ -16,8 +19,11 @@ def get_annotated_bbox(raw_bbox_string):
     
 def get_page_details(page_tree):
     ocr_page = page_tree.xpath("//body/div[@class='ocr_page']")
-    # Croak if we have more than one page
-    assert len(ocr_page) == 1
+    # Raise an error if we have more than one page -- this happens occasionally, not sure why yet. 
+    num_pages = len(ocr_page)
+    if num_pages != 1:
+        raise PageCountError ("Pages count mismatch: %s pages found" % (num_pages))
+    
     return ocr_page[0].attrib
     
 def get_bbox_from_title(title):

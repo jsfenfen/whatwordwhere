@@ -43,3 +43,9 @@ class PageWord(models.Model):
     
 
 
+""" manual flush
+delete from documents_page;
+delete from documents_pageword;
+delete from documents_document;
+
+"""
