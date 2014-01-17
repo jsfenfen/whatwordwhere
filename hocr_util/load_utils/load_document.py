@@ -1,4 +1,4 @@
-import re
+import re, traceback
 
 from parser.document_parser import document_parser
 from parser.parse_utils import get_words_from_page, get_words_with_lines_from_page
@@ -7,6 +7,7 @@ from load_utils.load_page import enter_words
 from geo_utils.word_shapes import get_poly_string_from_bbox
 
 from django.contrib.gis.geos import GEOSGeometry
+
 
 parser = None
 bbox_re = re.compile(r'bbox\s+(.+)')
@@ -33,7 +34,7 @@ def enter_page_words_only(doc, page, page_number):
     enter_words_only(page_pk, page['words'])
     
 def enter_page(doc, page, page_number):
-    print "processing page %s" % page_number
+    #print "processing page %s" % page_number
     page_attributes =  page['attrib']
     title = page_attributes['title']
     r = bbox_re.search(title)
@@ -64,6 +65,7 @@ def enter_document(file_path, document_id):
         # READ THE PAGE AS A HIERARCHY OF LINES AND WORDS. ONLY WORDS ARE GIVEN BOUNDING BOXES HERE THOUGH
         # THE HOCR SPEC GIVES LINES BOUNDING BOXES, SO THEY COULD BE ADDED, IT'S JUST NOT CLEAR IF THAT WOULD HELP
         # I ASSUME THE LINE IS JUST THE CONVEX HULL OF THE WORDS, BUT DON'T KNOW THIS FOR SURE. 
+        
         page = get_words_with_lines_from_page(this_page.getvalue())
         enter_page(this_doc, page, page_count)
 
