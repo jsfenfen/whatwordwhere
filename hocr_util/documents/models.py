@@ -47,5 +47,6 @@ class PageWord(models.Model):
 delete from documents_page;
 delete from documents_pageword;
 delete from documents_document;
+drop index pagewords_geom_gist;
 
 """

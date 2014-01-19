@@ -54,17 +54,19 @@ def enter_words(page_pk, word_array):
     writer = csv.DictWriter(transactions_to_commit, fields, restval="", extrasaction='ignore', lineterminator='\n', delimiter=";", quoting=csv.QUOTE_ALL, quotechar=QUOTE_CHAR, escapechar=ESCAPE_CHAR)
 
     word_array = get_word_shapes(word_array)
+    #print "Entering words, with word length %s" % (len(word_array))
+    
 
     for word in word_array:
         wkb = word['poly'].hex
-        #print "data: %s %s %s" % (page_pk, text, wkb)
+        #print "data: %s %s %s" % (page_pk, word['text'], wkb)
         word_fixed = word_clean(word['text'])
         writer.writerow({'page_pk':page_pk, 'word':word_fixed, 'bbox': wkb, 'word_num':word['word_num'], 'line_num':word['line_num']})
 
     length = transactions_to_commit.tell()
     
     ## debug raw sql output for quoting etc issues (ugh) with:
-    # print transactions_to_commit.getvalue()
+    #print transactions_to_commit.getvalue()
     
     transactions_to_commit.seek(0)
     sql = "COPY documents_pageword (page_pk, word, bbox, word_num, line_num) FROM STDIN delimiter ';' escape '%s' quote '%s' CSV " % (ESCAPE_CHAR, QUOTE_CHAR)

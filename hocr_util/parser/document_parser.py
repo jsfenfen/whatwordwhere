@@ -33,13 +33,20 @@ class document_parser(object):
         end_of_page_found=False
         
         while not end_of_page_found:
-            this_line = self.file_source.next()
+            this_line = self.file_source.next().strip()
+            
+            # Destroy all namespaces, meta, whatever. Much easier than trying to do this with lxml.
+            if this_line.startswith("<html"):
+                this_line = "<html>"
+            
             if this_line.startswith("</html>") :
                 end_of_page_found = True
             
             if self.encoding != 'utf-8':
                 this_line = this_line.decode(self.encoding).encode('utf-8')
+            
             page_to_return.write(this_line)
+            
         self.pages_read += 1
         return page_to_return
         
