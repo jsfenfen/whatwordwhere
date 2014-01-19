@@ -10,7 +10,8 @@ from django.contrib.gis.geos import GEOSGeometry
 
 
 parser = None
-bbox_re = re.compile(r'bbox\s+(.+)')
+bbox_re = re.compile(r'bbox\s+(.+)\;*')
+ppageno_re = re.compile(r'; ppageno \d+')
 
 # ignore the line numbers. This is essentially deprecated, but left here in case it becomes useful again. 
 def enter_page_words_only(doc, page, page_number):
@@ -37,10 +38,17 @@ def enter_page(doc, page, page_number):
     #print "processing page %s" % page_number
     page_attributes =  page['attrib']
     title = page_attributes['title']
-    r = bbox_re.search(title)
+    #semicolon_position = title.find(';')
+    #if semicolon_position > 0:
+    #    title = title[:semicolon_position]
+    #print "title is '%s'" % title
+    #r = bbox_re.search(title)
 
-    bbox_raw = r.group(1)
+    #bbox_raw = r.group(1)
+    bbox_raw = title.split(';')[1]
+    bbox_raw = bbox_raw.replace("bbox ", "")
     poly_string = get_poly_string_from_bbox(bbox_raw)
+    #print "bbox is %s, poly_string is: %s" % (bbox_raw, poly_string)
     poly = GEOSGeometry(poly_string)
     wkb = poly.hex
     this_page, created = Page.objects.get_or_create(

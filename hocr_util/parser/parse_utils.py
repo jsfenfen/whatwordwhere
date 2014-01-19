@@ -1,6 +1,6 @@
 """ Assumes word ids are page"""
 
-from lxml import etree
+from lxml import etree, objectify
 from lxml.etree import tostring
 from StringIO import StringIO
 
@@ -22,18 +22,26 @@ def get_page_details(page_tree):
     # Raise an error if we have more than one page -- this happens occasionally, not sure why yet. 
     num_pages = len(ocr_page)
     if num_pages != 1:
+        print "%s" % (tostring(page_tree))
         raise PageCountError ("Pages count mismatch: %s pages found" % (num_pages))
-    
+        
     return ocr_page[0].attrib
     
 def get_bbox_from_title(title):
     # This is brittle, but seems to work
     return title.lstrip('bbox ')
 
+## There seem to be to variants of the hocr -- one has span class of 'ocr_word' the other users 'ocrx_word'. We're just looking for a class that starts with ocr_word, but I dunno if that's good, of if we'll find other problems in later dox.
+
 # flatten the entire page into just an array of words
 def get_words_only(word_tree):
     word_array = []
-    hocr_words = word_tree.xpath("//body/div[@class='ocr_page']/div[@class='ocr_carea']/p[@class='ocr_par']/span[@class='ocr_line']/span[@class='ocr_word']")
+    xpath_query = "//body/div[@class='ocr_page']/div[@class='ocr_carea']/p[@class='ocr_par']/span[@class='ocr_line' and @id='" + line_id + "']/span[starts-with(@class, 'ocr')]"
+    #xpath_query1 = "//body/div[@class='ocr_page']/div[@class='ocr_carea']/p[@class='ocr_par']/span[@class='ocr_line' and @id='" + line_id + "']/span[@class='ocr_word']"
+    #xpath_query2 = "//body/div[@class='ocr_page']/div[@class='ocr_carea']/p[@class='ocr_par']/span[@class='ocr_line' and @id='" + line_id + "']/span[@class='ocrx_word']"
+    hocr_words = etree.xpath(xpath_query)
+    #if not hocr_words:
+    #    hocr_words = etree.xpath(xpath_query2)
     for word in hocr_words:
         #print word.attrib
         # the text may be contained in this span, but it may also be contained in a child element.
@@ -44,8 +52,13 @@ def get_words_only(word_tree):
 def get_words_from_line(etree, line_id, line_num):
     #print "line id: %s" % line_id
     word_array = []
-    xpath_query = "//body/div[@class='ocr_page']/div[@class='ocr_carea']/p[@class='ocr_par']/span[@class='ocr_line' and @id='" + line_id + "']/span[@class='ocr_word']"
+    xpath_query = "//body/div[@class='ocr_page']/div[@class='ocr_carea']/p[@class='ocr_par']/span[@class='ocr_line' and @id='" + line_id + "']/span[starts-with(@class, 'ocr')]"
+    #xpath_query1 = "//body/div[@class='ocr_page']/div[@class='ocr_carea']/p[@class='ocr_par']/span[@class='ocr_line' and @id='" + line_id + "']/span[@class='ocr_word']"
+    #xpath_query2 = "//body/div[@class='ocr_page']/div[@class='ocr_carea']/p[@class='ocr_par']/span[@class='ocr_line' and @id='" + line_id + "']/span[@class='ocrx_word']"
     hocr_words = etree.xpath(xpath_query)
+    # hocr_words = etree.xpath(xpath_query1)
+    #if not hocr_words:
+    #    hocr_words = etree.xpath(xpath_query2)
     for word in hocr_words:
         # the text may be contained in this span, but it may also be contained in a child element.
         word_array.append({'bbox':get_bbox_from_title(word.attrib['title']), 'text':tostring(word, method="text", encoding='UTF-8'), 'word_num':word.attrib['id'].replace("word_",""), 'line_num':line_num})
@@ -53,6 +66,7 @@ def get_words_from_line(etree, line_id, line_num):
 
 # flatten the page into a two-level hierarchy: lines, which contain words.
 def get_lines_with_words(line_tree):
+    #print tostring(line_tree)
     word_array = []
     hocr_lines = line_tree.xpath("//body/div[@class='ocr_page']/div[@class='ocr_carea']/p[@class='ocr_par']/span[@class='ocr_line']")
     for line in hocr_lines:
