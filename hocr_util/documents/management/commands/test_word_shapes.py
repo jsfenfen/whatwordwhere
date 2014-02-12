@@ -1,3 +1,5 @@
+""" Test management commands that tries to parse hocr and attach GEOS geometries"""
+
 import os
 
 from django.core.management.base import BaseCommand, CommandError

@@ -1,3 +1,9 @@
+"""
+Test management command to dump some geojson files. 
+The geojson dumping is django independent, though obviously
+running this as a management commands requires it.
+"""
+
 import os
 
 from django.core.management.base import BaseCommand, CommandError
@@ -15,9 +21,7 @@ class Command(BaseCommand):
     help = "test by loading a document"
     requires_model_validation = False
 
-    def handle(self, *args, **options):
-        """ test cmd to just get a page with geosgeometries attached """
-        
+    def handle(self, *args, **options):        
         for d, _, files in os.walk(SAMPLE_FILE_DIR):
             for i, this_file in enumerate(files):
                 file_path = SAMPLE_FILE_DIR + this_file

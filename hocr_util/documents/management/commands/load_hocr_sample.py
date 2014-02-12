@@ -1,5 +1,7 @@
-## assumes that the 1000-file hocr sample is loaded into the SAMPLE_FILE_DIR
-
+""" 
+Try loading a 1000-document hocr sample into the db. 
+    assumes that the 1000-file hocr sample is loaded into the SAMPLE_FILE_DIR
+"""
 import os 
 
 from django.core.management.base import BaseCommand, CommandError
@@ -43,10 +45,9 @@ class Command(BaseCommand):
                         enter_document(file_path, doc_id)
                         
                     except PageCountError:
-                        # It seems that documents have this problem with all pages or with none. Not sure why
                         
                         print "Error entering file number %s from %s - entire document skipped. " % (i, file_path)
-                        # print traceback.print_exc()
+                        print traceback.print_exc()
         
         end = datetime.now()
         elapsed = end-start
