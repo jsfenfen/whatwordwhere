@@ -26,11 +26,9 @@ def document_page_geojson(request, doc_id, page_number):
     
     this_page = get_object_or_404(Page, doc__document_id=doc_id, page_number=page_number)
     this_page_words = PageWord.objects.filter(page_pk=this_page.pk).values('text','bbox', 'line_num')
-    print this_page_words[0]
     page = {}
     page['words'] = this_page_words        
     output = get_feature_collection(page)
     # todo: add the page bounding box. 
-    
     return HttpResponse(output, content_type="application/json")
 
