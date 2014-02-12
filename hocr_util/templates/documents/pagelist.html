@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block pagetitle %}Page list {% endblock %}
+{% block main %}
+<h2>Pages in Document <a href="{{doc.get_absolute_url}}">{{doc.document_id}}</a></h2>
+{% if pages %}
+<ul>
+{% for page in pages %}
+<li><a href="{{page.get_geojson_url}}">p{{page.page_number}}.geojson</a></li>
+{% endfor %}
+</ul>
+{% endif %}  
+{% endblock %}
