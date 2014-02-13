@@ -5,7 +5,7 @@ from hocr_parser.parse_utils import get_words_with_lines_from_page
 from geo_utils.geojson_utils import get_feature_collection
 
 # A test file
-hocr_file = "parser/test_hocr/58-1723645_990_201204.html"
+hocr_file = "hocr_parser/test_hocr/58-1723645_990_201204.html"
 
 # create a parser for this doc
 hocr_parser = document_parser(hocr_file, encoding='latin-1')
