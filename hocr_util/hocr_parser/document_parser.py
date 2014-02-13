@@ -1,4 +1,5 @@
-""" lazily read an hocr document, returning pages until it's done. 
+""" 
+Lazily read an hocr document, returning pages until it's done. 
 Pages are returned as cStringIO objects. Expects strict hocr adherence.
 </html> must appear on it's own line to end a page... 
 

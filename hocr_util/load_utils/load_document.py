@@ -1,7 +1,7 @@
 import re, traceback
 
-from parser.document_parser import document_parser
-from parser.parse_utils import get_words_from_page, get_words_with_lines_from_page
+from hocr_parser.document_parser import document_parser
+from hocr_parser.parse_utils import get_words_from_page, get_words_with_lines_from_page
 from documents.models import Document, Page, PageWord
 from load_utils.load_page import enter_words
 from geo_utils.word_shapes import get_poly_string_from_bbox

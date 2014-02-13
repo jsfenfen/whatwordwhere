@@ -4,8 +4,8 @@ import os
 
 from django.core.management.base import BaseCommand, CommandError
 
-from parser.document_parser import document_parser
-from parser.parse_utils import get_words_with_lines_from_page
+from hocr_parser.document_parser import document_parser
+from hocr_parser.parse_utils import get_words_with_lines_from_page
 from geo_utils.word_shapes import get_word_shapes
 
 # where the files at?

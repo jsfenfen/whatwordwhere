@@ -11,8 +11,8 @@ from lxml import etree
 from lxml.etree import tostring
 from StringIO import StringIO
 
-from parser.document_parser import document_parser
-from parser.parse_utils import get_words_from_page, get_words_with_lines_from_page, get_annotated_bbox
+from hocr_parser.document_parser import document_parser
+from hocr_parser.parse_utils import get_words_from_page, get_words_with_lines_from_page, get_annotated_bbox
 
 
 flexible_parser = etree.XMLParser(encoding='utf-8', recover=True)

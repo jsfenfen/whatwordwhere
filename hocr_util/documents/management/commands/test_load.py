@@ -1,4 +1,6 @@
-""" Test management command to load a single document into the db, including GEOS stuff. """
+""" 
+Test management command to load a single document into the db, including GEOS stuff. 
+"""
 
 from django.core.management.base import BaseCommand, CommandError
 from load_utils.load_document import enter_document

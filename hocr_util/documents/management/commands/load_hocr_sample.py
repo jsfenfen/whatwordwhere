@@ -9,7 +9,7 @@ from django.core.management.base import BaseCommand, CommandError
 from load_utils.load_document import enter_document
 from datetime import datetime
 
-from parser.parse_errors import PageCountError
+from hocr_parser.parse_errors import PageCountError
 
 
 # where the files at?

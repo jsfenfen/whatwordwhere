@@ -1,7 +1,7 @@
 """ A django-independent test that reads a document and returns geojson files for each page. """
 
-from parser.document_parser import document_parser
-from parser.parse_utils import get_words_with_lines_from_page
+from hocr_parser.document_parser import document_parser
+from hocr_parser.parse_utils import get_words_with_lines_from_page
 from geo_utils.geojson_utils import get_feature_collection
 
 # A test file
