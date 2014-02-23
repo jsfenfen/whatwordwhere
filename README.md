@@ -29,7 +29,7 @@ Initial setup
 =============
 After running syncdb to create the initial models, we need to remove some checks that geodjango adds in on the assumption that we're using real geospatial data. Run:
 
-	python manage.py remove_gis_constraints
+	python manage.py drop_gis_constraints
 
 For more details, see the command in documents/management/commands. 
 
