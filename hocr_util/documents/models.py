@@ -26,13 +26,6 @@ class Page(models.Model):
         return "/documents/geojson/%s/p%s.geojson" % (self.doc.document_id, self.page_number)
 
 # todo: hash the actual words, so instead of saving a word, we save an id. 
-# Need to make it not check srid until we find one that works better
-# also drop other constraints that aren't gonna be violated--we hope
-"""
-alter table documents_pageword drop constraint "enforce_srid_poly";
-alter table documents_pageword drop constraint "enforce_dims_poly";
-alter table documents_pageword drop constraint "enforce_geotype_poly";
-"""
 
 class PageWord(models.Model):
     # to save time, we're not explicitly checking that page_pk is indeed a page primary key. But it should be.
@@ -46,12 +39,14 @@ class PageWord(models.Model):
     # we don't create a spatial index initially. Manage this by hand, because this will kill our inserts otherwise.
     objects = models.GeoManager()
     
+    """
+    After creating PageWord with syncdb, you must run manage.py drop_gis_constraints to kill some 
+    unenforceable constraints. But equivalently you can just run this at the db prompt. 
+    
+    # todo: roll a custom srid so that the enforce_srid constraint isn't violated. 
+    
+    alter table documents_pageword drop constraint "enforce_srid_poly";
+    alter table documents_pageword drop constraint "enforce_dims_poly";
+    alter table documents_pageword drop constraint "enforce_geotype_poly";
+    """
 
-
-""" manual flush
-delete from documents_page;
-delete from documents_pageword;
-delete from documents_document;
-drop index pagewords_geom_gist;
-
-"""
