@@ -1,10 +1,12 @@
-""" A simple test that reads a document and returns parsed non-geographic data from it. """
+""" 
+A simple test that reads a document and returns parsed non-geographic data from it. 
+"""
 
 from document_parser import document_parser
 from parse_utils import get_words_from_page, get_words_with_lines_from_page, get_annotated_bbox
 
 
-file = "test_hocr/58-1723645_990_201204.html"
+file = "./test_hocr/58-1723645_990_201204.html"
 
 parser = document_parser(file, encoding='latin-1')
 

@@ -13,7 +13,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # sample file included with repo, hopefully
-        this_file = "parser/test_hocr/58-1723645_990_201204.html"
+        this_file = "hocr_parser/test_hocr/58-1723645_990_201204.html"
         doc_id = "58-1723645_990_201204"
         start = datetime.now()
         enter_document(this_file, doc_id)

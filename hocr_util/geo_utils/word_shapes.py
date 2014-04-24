@@ -8,7 +8,7 @@ from hocr_parser.parse_utils import get_words_from_page
 def get_poly_string_from_bbox(bbox_string):
     """ Get a string formatted for GEOS based on an hocr-style bounding box"""
     coords = bbox_string.split()
-    return """POLYGON((%s %s, %s %s,%s %s,%s %s,%s %s))""" % (
+    return """SRID=97589;POLYGON((%s %s, %s %s,%s %s,%s %s,%s %s))""" % (
         coords[0], coords[1], coords[0], coords[3], coords[2], 
         coords[3], coords[2], coords[1],coords[0], coords[1] 
     )

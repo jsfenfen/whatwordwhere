@@ -20,7 +20,7 @@ flexible_parser = etree.XMLParser(encoding='utf-8', recover=True)
 
 file_name = "58-1723645_990_201204"
 
-file_path = "parser/test_hocr/" + file_name + ".html"
+file_path = "hocr_parser/test_hocr/" + file_name + ".html"
 parser = document_parser(file_path, encoding='latin-1')
 
 page_num = 0

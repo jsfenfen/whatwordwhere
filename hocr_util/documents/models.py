@@ -18,7 +18,7 @@ class Page(models.Model):
     doc = models.ForeignKey(Document)
     page_number = models.IntegerField(null=True)
     image = models.CharField(max_length=15, blank=True, null=True)
-    page_dimensions = models.PolygonField(null=True, spatial_index=False)
+    page_dimensions = models.PolygonField(null=True, spatial_index=False, srid=97589)
     orientation = models.CharField(max_length=1, null=True, help_text="V=vertical, H=horizontal. Or do we need 4 orientations?")
     objects = models.GeoManager()
 
@@ -35,7 +35,7 @@ class PageWord(models.Model):
     line_num = models.IntegerField(null=True)
     ## bbox should be of the form 
     bbox = models.CharField(max_length=31, blank=True, null=True)
-    poly = models.PolygonField(null=True, spatial_index=False)
+    poly = models.PolygonField(null=True, spatial_index=False, srid=97589)
     # we don't create a spatial index initially. Manage this by hand, because this will kill our inserts otherwise.
     objects = models.GeoManager()
     
