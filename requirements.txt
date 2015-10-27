@@ -1,4 +1,4 @@
-django
+Django==1.8.5
 psycopg2
 # postgis
 geojson
