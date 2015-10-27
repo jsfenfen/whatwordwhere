@@ -4,27 +4,51 @@
 
 from django.contrib.gis.db import models
 
-class Document(models.Model):
-    document_id = models.CharField(max_length=63, blank=True, null=True, unique=True)
-    ein = models.CharField(max_length=15, blank=True, null=True)
-    year = models.IntegerField(null=True)
-    month = models.IntegerField(null=True)
-    form = models.CharField(max_length=7, blank=True, null=True)
+class Document_Collection(models.Model):
+    collection_name = models.TextField()
+    collection_slug = models.SlugField()
+    collection_description = models.TextField(blank=True, null=True)
+    
+    ## eventually need ownership, permissions. 
     
     def get_absolute_url(self):
-        return "/documents/document/%s/" % (self.document_id)
+        return "/documents/collection/%s/" % (self.collection_slug)
+
+
+
+class Document(models.Model):
+    document_id = models.CharField(max_length=63, unique=True, primary_key=True)
+    document_title = models.TextField(blank=True, null=True)
+    document_collection = models.ForeignKey(Document_Collection, null=True)
+    
+    ## need to add: number_of_pages -- makes has_next stuff easier for pages
+
+    def __unicode__(self):
+        return "%s" % (self.document_id)
+ 
+
+    def get_absolute_url(self):
+        return "/documents/collection/%s/%s/" % (self.document_collection.collection_slug, self.document_id)
     
 class Page(models.Model):
     doc = models.ForeignKey(Document)
     page_number = models.IntegerField(null=True)
-    image = models.CharField(max_length=15, blank=True, null=True)
+    image = models.CharField(max_length=127, blank=True, null=True, help_text="url for image")
     page_dimensions = models.PolygonField(null=True, spatial_index=False, srid=97589)
     orientation = models.CharField(max_length=1, null=True, help_text="V=vertical, H=horizontal. Or do we need 4 orientations?")
     objects = models.GeoManager()
 
     def get_geojson_url(self):
-        return "/documents/geojson/%s/p%s.geojson" % (self.doc.document_id, self.page_number)
+        return "/documents/geojson/%s/%s/p%s.geojson" % (self.doc.document_collection.collection_slug, self.doc.document_id, self.page_number)
+    
+    def get_absolute_url(self):
+        return "/documents/collection/%s/%s/%s/" % (self.doc.document_collection.collection_slug, self.doc.document_id, self.page_number)
+        
+    def __unicode__(self):
+        return "Doc: %s page: %s" % (self.doc.document_id, self.page_number)
 
+    class Meta:    
+        unique_together = (("doc", "page_number"),)
 # todo: hash the actual words, so instead of saving a word, we save an id. 
 
 class PageWord(models.Model):

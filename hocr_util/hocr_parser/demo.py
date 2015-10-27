@@ -6,8 +6,8 @@ from document_parser import document_parser
 from parse_utils import get_words_from_page, get_words_with_lines_from_page, get_annotated_bbox
 
 
-file = "./test_hocr/58-1723645_990_201204.html"
-
+#file = "./test_hocr/58-1723645_990_201204.html"
+file = "/Users/jfenton/github-whitelabel/jsk_project/jsk_management/ca_childcare_docs/page_scans/1815360-hillside-nursery-school-p7.html"
 parser = document_parser(file, encoding='latin-1')
 
 
@@ -17,7 +17,7 @@ for this_page in parser:
     #page = get_words_from_page(this_page.getvalue())
     
     page = get_words_with_lines_from_page(this_page.getvalue())
-    
+    print page
     # pages have two attributes: 'attrib' and 'words'
     page_attributes =  page['attrib']
     first_word =  page['words'][0]

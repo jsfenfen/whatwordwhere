@@ -2,7 +2,7 @@ import re, traceback
 
 from hocr_parser.document_parser import document_parser
 from hocr_parser.parse_utils import get_words_from_page, get_words_with_lines_from_page
-from documents.models import Document, Page, PageWord
+from documents.models import Document_Collection, Document, Page, PageWord
 from load_utils.load_page import enter_words
 from geo_utils.word_shapes import get_poly_string_from_bbox
 
@@ -34,7 +34,7 @@ def enter_page_words_only(doc, page, page_number):
     # READ THE PAGE AS A BUNCH OF WORDS ONLY
     enter_words_only(page_pk, page['words'])
     
-def enter_page(doc, page, page_number):
+def enter_page(doc, page, page_number, only_enter_new_pages=False):
     #print "processing page %s" % page_number
     page_attributes =  page['attrib']
     title = page_attributes['title']
@@ -56,15 +56,19 @@ def enter_page(doc, page, page_number):
         page_number=page_number, 
         defaults={'page_dimensions':poly}
     )
-
-    page_pk = this_page.pk
-    enter_words(page_pk, page['words'])
+    print "This page is: %s created=%s" % (this_page, created)
+    
+    # Only enter pagewords if the page is new (or if we're telling it to. )
+    if not created or not only_enter_new_pages:
+        page_pk = this_page.pk
+        enter_words(page_pk, page['words'])
     
 # Ignore whatever internal pagination there is, and count pages ourselves. 
 # This may cause trouble later, I dunno.
-def enter_document(file_path, document_id):
+def enter_document(file_path, document_id, collection_slug, only_enter_new_pages=False):
+    this_collection, created = Document_Collection.objects.get_or_create(collection_slug=collection_slug)
     parser = document_parser(file_path, encoding='latin-1')
-    this_doc, created = Document.objects.get_or_create(document_id=document_id)
+    this_doc, created = Document.objects.get_or_create(document_id=document_id, document_collection=this_collection)
     # todo: populate ein, form, year, month from id
     page_count=0
     for this_page in parser:
@@ -75,12 +79,26 @@ def enter_document(file_path, document_id):
         # I ASSUME THE LINE IS JUST THE CONVEX HULL OF THE WORDS, BUT DON'T KNOW THIS FOR SURE. 
         
         page = get_words_with_lines_from_page(this_page.getvalue())
-        enter_page(this_doc, page, page_count)
+        enter_page(this_doc, page, page_count, only_enter_new_pages)
+
+
+# Ignore whatever internal pagination there is, and count pages ourselves. 
+# This may cause trouble later, I dunno.
+def enter_singlepage_document(file_path, document_id, collection_slug, page_number,only_enter_new_pages=False):
+    this_collection, created = Document_Collection.objects.get_or_create(collection_slug=collection_slug)
+    parser = document_parser(file_path, encoding='latin-1')
+    this_doc, created = Document.objects.get_or_create(document_id=document_id, document_collection=this_collection)
+    # todo: populate ein, form, year, month from id
+    page_count=0
+    for this_page in parser:
+        page_count+=1
+        assert page_count < 2
+        
+        page = get_words_with_lines_from_page(this_page.getvalue())
+        enter_page(this_doc, page, page_number, only_enter_new_pages)
 
 
 
 
 
-
-    
     

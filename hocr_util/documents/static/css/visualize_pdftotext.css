@@ -1,0 +1,20 @@
+doc { 
+    display:none; 
+}
+
+page { 
+    display:none; 
+}
+
+word { 
+    display:none; 
+}
+
+text {
+    font-size:.5em;
+    z-index:99999;
+    fill:rgb(75, 87, 90);
+    text-align: right;
+    pointer-events: none;
+}
+

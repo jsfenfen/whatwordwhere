@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block pagetitle %}Doclist {% endblock %}
+{% block main %}
+<h2>Document Collections</h2>
+{% if collections %}
+<p>These are document collections</p>
+<ul>
+{% for collection in collections %}
+<li><a href="{{collection.get_absolute_url}}">{{collection.collection_slug}}</a></li>
+{% endfor %}
+</ul>
+{% endif %}  
+{% endblock %}

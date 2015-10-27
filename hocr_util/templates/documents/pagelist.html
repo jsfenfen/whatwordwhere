@@ -6,7 +6,7 @@
 {% if pages %}
 <ul>
 {% for page in pages %}
-<li><a href="{{page.get_geojson_url}}">p{{page.page_number}}.geojson</a></li>
+<li><a href="{{page.get_absolute_url}}">page {{page.page_number}}</a>&nbsp;|&nbsp;<a href="{{page.get_geojson_url}}">geojson</a> only&nbsp;|&nbsp;<a href="{{page.image}}">PNG</a> only</li>
 {% endfor %}
 </ul>
 {% endif %}  

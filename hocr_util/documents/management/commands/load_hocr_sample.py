@@ -3,11 +3,11 @@ Try loading a 1000-document hocr sample into the db.
 Assumes that the 1000-file hocr sample is loaded into the SAMPLE_FILE_DIR
 
 """
-import os 
+import os, re
 
 from django.core.management.base import BaseCommand, CommandError
 
-from load_utils.load_document import enter_document
+from load_utils.load_document import enter_singlepage_document
 from datetime import datetime
 
 from hocr_parser.parse_errors import PageCountError
@@ -16,7 +16,13 @@ from hocr_parser.parse_errors import PageCountError
 # where the files at?
 SAMPLE_FILE_DIR = 'parser/hocr_sample/'
 # Because this could take seriously long
-FILE_ENTRY_CAP = 1000
+FILE_ENTRY_CAP = 10000
+
+SAMPLE_FILE_DIR = '/Users/jfenton/github-whitelabel/jsk_project/jsk_management/who-dt_docs/whodt_hocr/'
+IMAGE_FILE_DIR = '/Users/jfenton/github-whitelabel/jsk_project/jsk_management/who-dt_docs/whodt_pages/'
+DOCUMENT_COLLECTION_SLUG = 'WHO-DT'
+
+DOCUMENT_NAME_RE = re.compile("(\d+)\-p(\d+).html")
 
 warning_message = """
 No html files were found to enter. You must download the hocr sample and unzip
@@ -42,11 +48,18 @@ class Command(BaseCommand):
                 # ignore files that aren't .html in case any got mixed in there
                 # may want to filter on other criteria here too
                 if file_path.find(".html") > 0 and i < FILE_ENTRY_CAP:
-                    doc_id = this_file.replace(".html", "")
-                    print "Entering file number %s data from: %s" % (i, file_path)
+                    doc_id = this_file
+                    ## we are entering documents that are of the form: %-pn.html
+                    ## but use the doc_id without the paginatino
+                    result = DOCUMENT_NAME_RE.search(this_file)
+                    doc_id = result.group(1)
+                    page_number = result.group(2)
+                    print "Doc id is: %s file_path is %s page_number = %s" % (doc_id, file_path, page_number)
+                        
+                    
                     
                     try:
-                        enter_document(file_path, doc_id)
+                        enter_singlepage_document(file_path, doc_id, DOCUMENT_COLLECTION_SLUG, page_number, only_enter_new_pages=False)
                         
                     except PageCountError:
                         

@@ -29,13 +29,15 @@
     </head>  
     <body>
       <div class="info">
-      This is a display of a single page at a time from 58-1723645_990_201204.pdf</a>.
-      <br>Using doc '<span id="doc_displayed"></span>'; displaying page: <span id="page_displayed"></span>
-      <br>Enter a page number to change the display <input type="text" id="page_form"></input> <input type="button" value="Go" id="load_button" />
+      This is a display of a single page: <span id="doc_displayed"></span>.
+      <!-- ><input type="text" id="page_form"></input> --> <input type="button" value="Load page" id="load_button" />
       
       
     </div>
     <div id="wrapper">
+<!--      <img src="page_scans/1088501-adventuretime-alta-p1.png" style="width: 700px; height: 906px;" /> -->
+      <img src="whodt_pages/14422504053760-p2.png" style="width: 700px; height: 906px;" />
+
    	<div id='canvas_container'></div></div>
       
     <script type="text/javascript">
@@ -52,11 +54,11 @@
 	  var set;
 		var words = [];
 		
+		//whodt_pages/14424341966397-p6.png
 		// set document and dir -- this eventually may be changeable by the user
-		var url_base = "hocr_pages/";
-    var this_doc = "58-1723645_990_201204";
-    
-		
+		var url_base = "whodt_hocr/";
+		var default_doc_id = "14422504053760-p2";
+		var default_doc_html = url_base + default_doc_id + ".html";
 		
 		var hoverIn = function() {
             this.attr({"stroke":'#F00',"stroke-width":1, "stroke-opacity": 1, "fill-opacity":0});
@@ -72,19 +74,18 @@
       return [parseInt(bb[0]), parseInt(bb[1]),parseInt(bb[2]),parseInt(bb[3])];
     }
     
-    function load_page(page_num) {
+    function load_page(page_url) {
       
 			
       set = paper.set();
-      //page_num = 440;
-      hocr_url = url_base + this_doc + "p" + String(page_num) + ".html";
+      hocr_url = page_url;
       console.log("Attempting to load page: " + hocr_url);
       // Even though the file extension is html, we want jquery to treat it as xml
 			$.ajax({
       url: hocr_url,
       dataType: "xml"
       }) .fail(function() {
-      alert( "error" );
+      alert( "ajax failed to load: " + hocr_url );
       }).done(function(data) {
         
         var xmlstr = data.xml ? data.xml : (new XMLSerializer()).serializeToString(data);
@@ -124,7 +125,7 @@
             thisclass = attributes.getNamedItem('class').value;
             thisid = attributes.getNamedItem('id').value;
             thistitle = attributes.getNamedItem('title').value;
-            if (thisclass == 'ocr_word') {
+            if (thisclass == 'ocr_word' || thisclass == 'ocrx_word') {
               resultarray = parsebbox(thistitle);
               words.push({'contained_text':spans[i].textContent, 'x0':resultarray[0], 'y0':resultarray[1], 'x1':resultarray[2],  'y1':resultarray[3]})
               //console.log('adding word ' + spans[i].textContent + ' with location ' + resultarray);
@@ -132,7 +133,7 @@
         
         }
         
-        console.log("words added");
+        console.log("words added, with length: " + words.length);
         
         // Plot largest first 
         words = words.sort(function(x, y){ return (x.x1-x.x0)*(x.y1-x.y0) < (y.x1-y.x0)*(y.y1-y.y0) });
@@ -145,44 +146,47 @@
   		    toplefty = words[i].y0*yscale;
   		    rectwidth = (words[i].x1 - words[i].x0) * xscale;
   		    rectheight = (words[i].y1 - words[i].y0) * yscale;
-  		    rect = paper.rect(topleftx, toplefty, rectwidth, rectheight).attr({"fill": "#b00", "title":words[i].contained_text, "fill-opacity":0.2, "stroke":'#bbb',"stroke-width":1, "stroke-opacity": 0.5});
+  		    rect = paper.rect(topleftx, toplefty, rectwidth, rectheight).attr({"fill": "#b00", "title":words[i].contained_text + "(" + words[i].x0 + "," + words[i].y0 + ") (" + words[i].x1 + "," + words[i].y1 + ")", "fill-opacity":0.2, "stroke":'#bbb',"stroke-width":1, "stroke-opacity": 0.5});
 
 
           rect.hover(hoverIn, hoverOut, rect, rect);
           set.push(rect);
   		  }
       });
-      $( "#page_displayed" ).html(String(page_num));
+      //$( "#page_displayed" ).html(String(page_num));
       
       
     }
     
-    function button_load() {
+    function button_load(url) {
       // clean up the page we already loaded
-      set.remove();
-      words = [];
+      //set.remove();
+      //words = [];
       
-      new_page = $("#page_form").val()
-      new_page = new_page.replace(/ /g,"");
-      load_page(new_page);
+      //new_page = $("#page_form").val()
+      //new_page = new_page.replace(/ /g,"");
+      //load_page(new_page);
+      load_page(url);
     }
     
     $(document).ready(function() { 
       paper = new Raphael('canvas_container', display_width, display_height);
-			load_page(440);
+			//load_page('');
 			
 			// document isn't changeable, so just set it here:
-			$( "#doc_displayed" ).html(this_doc);
+			$( "#doc_displayed" ).html(default_doc_html);
 			
 			$( "#load_button" )
-      .bind( "click", function() {
-        button_load();
-      });
+      button_load(default_doc_html);
+			
+     // .bind( "click", function() {
+    //    button_load(default_doc_html);
+      //});
       
       // hack to make return act as enter
       $("#page_form").keydown(function(event){
         if(event.keyCode == 13){
-          button_load();
+          button_load(default_doc_html);
         }
       });
       

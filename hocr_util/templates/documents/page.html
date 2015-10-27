@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block headjs %}
+<link rel="stylesheet" href="/static/css/visualize_pdftotext.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+{% endblock %}
+
+
+{% block pagetitle %}{{doc.document_id}} Page {{ page.page_number}}{% endblock %}
+{% block main %}
+<h2><a href="{{doc.get_absolute_url}}">{{doc.document_id}}</a> Page {{ page.page_number}}</h2>
+
+<svg id="paper" style="border:1px solid red;"></svg>
+
+<script type="text/javascript">
+
+var svg = d3.select("#paper");
+var data = [] // a global
+var scalefactor = 4;
+// Hardcode this to the actual dimensions of an image--this should somehow be normalized
+// and maybe include an option for horizontally-aligned pages (?)
+var height = 3300 / scalefactor;
+var width = 2550 / scalefactor;
+
+var tooltip = d3.select("body")
+    .append("div")
+    .style("position", "absolute")
+    .style("z-index", "10")
+    .style("visibility", "hidden")
+    .style("border","1px solid black")
+    .style("background-color", 'white')
+    .style("padding","10px")
+    .html("");
+
+function get_box_from_coordarray(coordarray ) {
+  // Wildly inefficient!     
+  // "Polygon ring order is undefined in GeoJSON"
+  // http://www.macwright.org/2015/03/23/geojson-second-bite.html#winding
+  // So get min and max, even though winding order seems consistent
+  //// We could prob use something function like:
+  //// var xmin = coordarray[0][0];
+  //// var ymin = coordarray[0][1];      
+  
+  
+  var xmax = d3.max(coordarray, function(d) { return d[0]} ) / scalefactor;
+  var xmin = d3.min(coordarray, function(d) { return d[0]} ) / scalefactor;
+  var ymax = d3.max(coordarray, function(d) { return d[1]} ) / scalefactor;
+  var ymin = d3.min(coordarray, function(d) { return d[1]} ) / scalefactor;
+  
+  return {'height':ymax-ymin, 'width':xmax-xmin, 'x':xmin, 'y':ymin};
+};
+
+d3.json("{{ page.get_geojson_url }}", function(error, json) {
+  if (error) return console.warn(error);
+  type = json['type'];
+  // Should be "FeatureCollection"
+  features = json['features'];
+  //console.log("data type: " + type);
+  
+  for (i=0;i<features.length; i++) {
+    this_feature = features[i];
+    
+    geomtype = this_feature["geometry"]["type"];
+    // Parse the feature directly.
+    // We know these are all boxes--we don't have to worry about holes etc
+    coordinates = this_feature["geometry"]["coordinates"][0];
+    // coordinates should be a 5-element long array where each element is a point. 
+    // The first and last points should be the same to show that the polygon is closed.
+    text = this_feature["properties"]["text"];
+    
+    // Ignore boxes with no text in them. Should also ignore ocr messups, but that's prob on backend.
+    if (text.length > 0 ) {
+      //console.log("feature: " + i + " : '" + text +  "' text len: " + text.length + " " + coordinates + " with len: " + coordinates.length);
+      results = get_box_from_coordarray(coordinates);
+    //console.log(" Results are x" + results["x"] + " y: " + results["y"] + " height: " + results["height"] + " width: " + results["width"]);
+      data.push({'text':text,'results':results, 'id':i});
+    }
+  }
+  
+  // Prob should get the data sorted this way, rather than having to sort here, but... 
+  data = data.sort(function(x, y){ return (x["results"]["width"])*(x["results"]["height"]) < (y["results"]["width"])*(y["results"]["height"]) });
+   
+  
+  svg.attr('width',width).attr('height',height);
+  svg.on("mousemove", function(){return tooltip.style("top",
+      (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");})
+      
+  doc_image = svg.append('g').classed('doc_image',true);
+  doc_image.append('image')
+      .attr('xlink:href','{{ page.image }}')
+      .attr('width', width)
+      .attr('height', height)
+      .attr('x',0)
+      .attr('y',0);
+  
+
+
+  bbox_container = svg.append('g').classed('bbox',true);
+
+  bboxes = bbox_container.selectAll('g')
+      .data(data)
+      .enter().append('g');
+      
+  bboxes.append('rect')
+      .attr('height', function(d){ return d["results"]["height"] })
+      .attr('width',  function(d){ return d["results"]["width"] })
+      .attr('x', function(d){ return d["results"]["x"] })
+      .attr('y', function(d){ return d["results"]["y"]})
+      .attr('id', function(d){ return "rect-" + String(d["id"]) })
+      .style('fill','rgba(127,16,16,0)')
+      .style('stroke-width',1)
+      .style('stroke','rgb(100,200,200)')
+      .on('mouseover', function(d) { tooltip.html("text='" + d["text"] + "'<br>x0=" + d["results"]["x"] + " y0=" + d["results"]["y"] + " w=" + d["results"]["width"] + " h=" + d["results"]["height"]); tooltip.style("visibility", "visible"); darken('#rect-'+d["id"] ) })
+      .on('mouseout', function(d) { tooltip.style("visibility", "hidden"); undarken('#rect-'+d["id"] ) });
+  bboxes.append('text')
+      .text(function(d){ return d.text; })
+      .attr('dx', '0')
+        .attr('dy', '0');
+
+function darken(node_id) {
+    d3.select(node_id)
+      .style('fill', 'rgba(255,0,0,0.3)')
+      .style('stroke','rgb(100,100,100)');
+      
+}
+
+function undarken(node_id) {
+    d3.select(node_id)
+      .style('fill', 'rgba(255,255,255,0)')
+      .style('stroke','rgb(100,200,200)');
+      
+}
+
+  });
+</script>
+
+{% endblock %}

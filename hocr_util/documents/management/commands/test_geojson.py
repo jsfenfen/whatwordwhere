@@ -14,12 +14,12 @@ from geo_utils.word_shapes import get_word_shapes
 from geo_utils.geojson_utils import get_feature_collection
 
 # where the files at?
-SAMPLE_FILE_DIR = 'parser/hocr_sample/'
+SAMPLE_FILE_DIR = '/Users/jfenton/github-whitelabel/whatwordwhere/whatwordwhere/display/page_scans/'
 
 
 class Command(BaseCommand):
     help = "test by loading a document"
-    requires_model_validation = False
+    requires_system_checks = False
 
     def handle(self, *args, **options):        
         for d, _, files in os.walk(SAMPLE_FILE_DIR):

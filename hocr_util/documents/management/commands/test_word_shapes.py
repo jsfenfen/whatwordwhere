@@ -9,12 +9,12 @@ from hocr_parser.parse_utils import get_words_with_lines_from_page
 from geo_utils.word_shapes import get_word_shapes
 
 # where the files at?
-SAMPLE_FILE_DIR = 'parser/hocr_sample/'
+SAMPLE_FILE_DIR = '/Users/jfenton/github-whitelabel/whatwordwhere/whatwordwhere/display/page_scans/'
 
 
 class Command(BaseCommand):
     help = "test by loading a document"
-    requires_model_validation = False
+    requires_system_checks = False
 
     def handle(self, *args, **options):
         """ test cmd to just get a page with geosgeometries attached """

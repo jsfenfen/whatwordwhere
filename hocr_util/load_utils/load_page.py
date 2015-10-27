@@ -13,7 +13,7 @@ from django.db import connection
 
 from hocr_parser.document_parser import document_parser
 from hocr_parser.parse_utils import get_words_from_page
-from documents.models import Document, Page, PageWord
+from documents.models import Document_Collection, Document, Page, PageWord
 from geo_utils.word_shapes import get_word_shapes
 
 
@@ -70,7 +70,7 @@ def enter_words(page_pk, word_array):
     length = transactions_to_commit.tell()
     
     ## debug raw sql output for quoting etc issues (ugh) with:
-    #print transactions_to_commit.getvalue()
+    print transactions_to_commit.getvalue()
     
     transactions_to_commit.seek(0)
     sql = "COPY documents_pageword (page_pk, text, bbox, poly, word_num, line_num) FROM STDIN delimiter ';' escape '%s' quote '%s' CSV " % (ESCAPE_CHAR, QUOTE_CHAR)
