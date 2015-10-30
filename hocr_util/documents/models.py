@@ -20,6 +20,9 @@ class Document(models.Model):
     document_id = models.CharField(max_length=63, unique=True, primary_key=True)
     document_title = models.TextField(blank=True, null=True)
     document_collection = models.ForeignKey(Document_Collection, null=True)
+    document_summary = models.TextField(blank=True, null=True, help_text="This is the first parage of the first page, be default")
+    page_count = models.IntegerField(null=True)
+    
     
     ## need to add: number_of_pages -- makes has_next stuff easier for pages
 
@@ -33,7 +36,9 @@ class Document(models.Model):
 class Page(models.Model):
     doc = models.ForeignKey(Document)
     page_number = models.IntegerField(null=True)
-    image = models.CharField(max_length=127, blank=True, null=True, help_text="url for image")
+    page_text = models.TextField(blank=True, null=True, help_text="This is the page full text")
+    image = models.TextField(blank=True, null=True, help_text="url for image")
+    thumbnail = models.TextField(blank=True, null=True, help_text="url for image thumbnail")
     page_dimensions = models.PolygonField(null=True, spatial_index=False, srid=97589)
     orientation = models.CharField(max_length=1, null=True, help_text="V=vertical, H=horizontal. Or do we need 4 orientations?")
     objects = models.GeoManager()
