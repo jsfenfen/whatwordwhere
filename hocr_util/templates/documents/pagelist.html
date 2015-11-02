@@ -6,7 +6,10 @@
 {% if pages %}
 <ul>
 {% for page in pages %}
-<li><a href="{{page.get_absolute_url}}">page {{page.page_number}}</a>&nbsp;|&nbsp;<a href="{{page.get_geojson_url}}">geojson</a> only&nbsp;|&nbsp;<a href="{{page.image}}">PNG</a> only</li>
+<li><img src="{{page.thumbnail}}" class="page_thumbnail" />
+  <a href="{{page.get_absolute_url}}">page {{page.page_number}}</a>&nbsp;|&nbsp;<a href="{{page.get_geojson_url}}">geojson</a> only&nbsp;|&nbsp;<a href="{{page.image}}">PNG</a> only
+  <p class="document_summary">{{ page.page_text|truncatewords:50}}</p>
+  </li>
 {% endfor %}
 </ul>
 {% endif %}  

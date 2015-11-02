@@ -8,10 +8,10 @@ import geojson
 
 def show_all(request):
     # just use 100 as a sample here. 
-    docs = Document.objects.all()[:100]
+    docs = Document.objects.all()[:10]
     return render_to_response('documents/doclist.html', 
         {'docs':docs,
-        'header':"All Documents [truncated at 100]",}
+        'header':"All Documents [truncated at 10]",}
     )
 
 def collections(request):
@@ -22,7 +22,7 @@ def collections(request):
 
 def collection_details(request, slug):
     coll = get_object_or_404(Document_Collection, collection_slug=slug)
-    docs = Document.objects.filter(document_collection=coll)[:100]
+    docs = Document.objects.filter(document_collection=coll)[:10]
 
 
     return render_to_response('documents/doclist.html', 
