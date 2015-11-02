@@ -4,11 +4,15 @@
 
 from django.contrib.gis.db import models
 
+# We may want to convert url fields to image fields, but b/c the process
+# is pretty uncoupled with processing the images, text seems fine now
+
 class Document_Collection(models.Model):
     collection_name = models.TextField()
     collection_slug = models.SlugField()
     collection_description = models.TextField(blank=True, null=True)
-    
+    #collection_document_count = models.IntegerField(null=True)
+    #collection_page_count = models.IntegerField(null=True)
     ## eventually need ownership, permissions. 
     
     def get_absolute_url(self):
@@ -22,6 +26,8 @@ class Document(models.Model):
     document_collection = models.ForeignKey(Document_Collection, null=True)
     document_summary = models.TextField(blank=True, null=True, help_text="This is the first parage of the first page, be default")
     page_count = models.IntegerField(null=True)
+    thumbnail = models.TextField(blank=True, null=True, help_text="url for image thumbnail")
+    
     
     
     ## need to add: number_of_pages -- makes has_next stuff easier for pages
