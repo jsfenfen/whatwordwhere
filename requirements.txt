@@ -3,4 +3,7 @@ psycopg2
 # postgis
 geojson
 lxml
-
+# for hstore; may need to peg version, dunno.
+# docs here: http://djangonauts.github.io/django-hstore/ 
+# must run 'CREATE EXTENSION hstore;' in the db, or in template1 as per docs
+django-hstore

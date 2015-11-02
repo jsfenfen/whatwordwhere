@@ -1,8 +1,5 @@
 """ Set document summary, thumbnail image, number of pages from page details. 
 """
-## cStringIO can't deal w/ unicode, so we're stuck with StringIO
-#from cStringIO import StringIO
-from StringIO import StringIO
 
 from django.core.management.base import BaseCommand, CommandError
 from documents.models import Document, Page
