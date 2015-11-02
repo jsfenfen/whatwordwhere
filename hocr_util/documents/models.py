@@ -23,6 +23,7 @@ class Document_Collection(models.Model):
 
 class Document(models.Model):
     document_id = models.CharField(max_length=63, unique=True, primary_key=True)
+    document_slug = models.SlugField(null=True)
     document_title = models.TextField(blank=True, null=True)
     document_collection = models.ForeignKey(Document_Collection, null=True)
     document_summary = models.TextField(blank=True, null=True, help_text="This is the first parage of the first page, be default")
