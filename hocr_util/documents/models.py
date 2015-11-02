@@ -3,6 +3,7 @@
 """
 
 from django.contrib.gis.db import models
+from django_hstore import hstore
 
 # We may want to convert url fields to image fields, but b/c the process
 # is pretty uncoupled with processing the images, text seems fine now
@@ -29,6 +30,8 @@ class Document(models.Model):
     thumbnail = models.TextField(blank=True, null=True, help_text="url for image thumbnail")
     
     
+    metadata = hstore.SerializedDictionaryField(null=True, help_text="Document metadata, as a dict")
+    objects = hstore.HStoreManager()
     
     ## need to add: number_of_pages -- makes has_next stuff easier for pages
 
