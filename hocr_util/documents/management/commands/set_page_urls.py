@@ -9,7 +9,7 @@ class Command(BaseCommand):
     requires_system_checks = False
 
     def handle(self, *args, **options):
-        unset_pages = Page.objects.all()
+        unset_pages = Page.objects.filter(doc__document_collection__collection_slug=='WHO-DT')
         for p in unset_pages:
             image_url = "http://jacobfenton.s3.amazonaws.com/hocr/collections/WHO-DT/" + p.doc.document_id + "-p" + str(p.page_number) + ".png"
             thumbnail_url = "http://jacobfenton.s3.amazonaws.com/hocr/collections/WHO-DT/" + p.doc.document_id + "-thumb-p" + str(p.page_number) + ".png"

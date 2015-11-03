@@ -30,9 +30,9 @@ def collection_details(request, slug):
      'header':slug,}
     )
     
-def document_page_list(request, slug, doc_id):
+def document_page_list(request, slug, doc_slug):
     # all pages of a document
-    doc = get_object_or_404(Document, document_id=doc_id, document_collection__collection_slug=slug)
+    doc = get_object_or_404(Document, document_slug=doc_slug, document_collection__collection_slug=slug)
     pages = Page.objects.filter(doc=doc).order_by('page_number')
     
     return render_to_response('documents/pagelist.html', {
@@ -40,9 +40,9 @@ def document_page_list(request, slug, doc_id):
         'doc':doc,
     })
 
-def document_page_details(request, slug, doc_id, page_number):
+def document_page_details(request, slug, doc_slug, page_number):
     # all pages of a document
-    doc = get_object_or_404(Document, document_id=doc_id, document_collection__collection_slug=slug)
+    doc = get_object_or_404(Document, document_slug=doc_slug, document_collection__collection_slug=slug)
     page = get_object_or_404(Page, doc=doc, page_number=page_number)
 
     return render_to_response('documents/page.html', {
@@ -51,9 +51,9 @@ def document_page_details(request, slug, doc_id, page_number):
     })
 
         
-def document_page_geojson(request, slug, doc_id, page_number):
-    this_document = get_object_or_404(Document, document_id=doc_id, document_collection__collection_slug=slug)
-    this_page = get_object_or_404(Page, doc__document_id=doc_id, page_number=page_number)
+def document_page_geojson(request, slug, doc_slug, page_number):
+    this_document = get_object_or_404(Document, document_slug=doc_slug, document_collection__collection_slug=slug)
+    this_page = get_object_or_404(Page, doc__document_slug=doc_slug, page_number=page_number)
     this_page_words = PageWord.objects.filter(page_pk=this_page.pk).values('text','bbox', 'line_num')
     page = {}
     page['words'] = this_page_words        

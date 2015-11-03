@@ -22,8 +22,7 @@ class Document_Collection(models.Model):
 
 
 class Document(models.Model):
-    document_id = models.CharField(max_length=63, unique=True, primary_key=True)
-    document_slug = models.SlugField(null=True)
+    document_slug = models.SlugField(null=True, max_length=127)
     document_title = models.TextField(blank=True, null=True)
     document_collection = models.ForeignKey(Document_Collection, null=True)
     document_summary = models.TextField(blank=True, null=True, help_text="This is the first parage of the first page, be default")
@@ -37,11 +36,11 @@ class Document(models.Model):
     ## need to add: number_of_pages -- makes has_next stuff easier for pages
 
     def __unicode__(self):
-        return "%s" % (self.document_id)
+        return "%s" % (self.document_slug)
  
 
     def get_absolute_url(self):
-        return "/documents/collection/%s/%s/" % (self.document_collection.collection_slug, self.document_id)
+        return "/documents/collection/%s/%s/" % (self.document_collection.collection_slug, self.document_slug)
     
 class Page(models.Model):
     doc = models.ForeignKey(Document)
@@ -54,13 +53,13 @@ class Page(models.Model):
     objects = models.GeoManager()
 
     def get_geojson_url(self):
-        return "/documents/geojson/%s/%s/p%s.geojson" % (self.doc.document_collection.collection_slug, self.doc.document_id, self.page_number)
+        return "/documents/geojson/%s/%s/p%s.geojson" % (self.doc.document_collection.collection_slug, self.doc.document_slug, self.page_number)
     
     def get_absolute_url(self):
-        return "/documents/collection/%s/%s/%s/" % (self.doc.document_collection.collection_slug, self.doc.document_id, self.page_number)
+        return "/documents/collection/%s/%s/%s/" % (self.doc.document_collection.collection_slug, self.doc.document_slug, self.page_number)
         
     def __unicode__(self):
-        return "Doc: %s page: %s" % (self.doc.document_id, self.page_number)
+        return "Doc: %s page: %s" % (self.doc.document_slug, self.page_number)
 
     class Meta:    
         unique_together = (("doc", "page_number"),)

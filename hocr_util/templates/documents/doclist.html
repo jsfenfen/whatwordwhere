@@ -7,8 +7,8 @@
 <ul>
 {% for doc in docs %}
 <li><img src="{{doc.thumbnail}}" class="page_thumbnail" />
-  <a href="{{doc.get_absolute_url}}">{{ doc.document_id}}</a>. Number of pages {{ doc.page_count }}
-  <p class="document_summary">{{ doc.document_summary|truncatewords:50}}</p>
+  <a href="{{doc.get_absolute_url}}">{{ doc.document_slug}}</a>. Number of pages {{ doc.page_count }}
+  <p class="document_summary">{% if doc.document_summary %}{{ doc.document_summary|truncatewords:50}}{% else %}no page text for {{ doc.pk }}{% endif %}</p>
   </li>
 
 {% endfor %}

@@ -56,7 +56,7 @@ def enter_page(doc, page, page_number, only_enter_new_pages=False):
         page_number=page_number, 
         defaults={'page_dimensions':poly}
     )
-    print "This page is: %s created=%s" % (this_page, created)
+    #print "This page is: %s created=%s" % (this_page, created)
     
     # Only enter pagewords if the page is new (or if we're telling it to. )
     if not created or not only_enter_new_pages:
@@ -65,10 +65,10 @@ def enter_page(doc, page, page_number, only_enter_new_pages=False):
     
 # Ignore whatever internal pagination there is, and count pages ourselves. 
 # This may cause trouble later, I dunno.
-def enter_document(file_path, document_id, collection_slug, only_enter_new_pages=False):
+def enter_document(file_path, document_slug, collection_slug, only_enter_new_pages=False):
     this_collection, created = Document_Collection.objects.get_or_create(collection_slug=collection_slug)
     parser = document_parser(file_path, encoding='latin-1')
-    this_doc, created = Document.objects.get_or_create(document_id=document_id, document_collection=this_collection)
+    this_doc, created = Document.objects.get_or_create(document_slug=document_slug, document_collection=this_collection)
     # todo: populate ein, form, year, month from id
     page_count=0
     for this_page in parser:
@@ -84,10 +84,10 @@ def enter_document(file_path, document_id, collection_slug, only_enter_new_pages
 
 # Ignore whatever internal pagination there is, and count pages ourselves. 
 # This may cause trouble later, I dunno.
-def enter_singlepage_document(file_path, document_id, collection_slug, page_number,only_enter_new_pages=False):
+def enter_singlepage_document(file_path, document_slug, collection_slug, page_number,only_enter_new_pages=False):
     this_collection, created = Document_Collection.objects.get_or_create(collection_slug=collection_slug)
     parser = document_parser(file_path, encoding='latin-1')
-    this_doc, created = Document.objects.get_or_create(document_id=document_id, document_collection=this_collection)
+    this_doc, created = Document.objects.get_or_create(document_slug=document_slug, document_collection=this_collection)
     # todo: populate ein, form, year, month from id
     page_count=0
     for this_page in parser:

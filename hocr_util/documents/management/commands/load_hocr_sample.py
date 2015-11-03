@@ -16,13 +16,13 @@ from hocr_parser.parse_errors import PageCountError
 # where the files at?
 SAMPLE_FILE_DIR = 'parser/hocr_sample/'
 # Because this could take seriously long
-FILE_ENTRY_CAP = 10000
+FILE_ENTRY_CAP = 1000000
 
-SAMPLE_FILE_DIR = '/Users/jfenton/github-whitelabel/jsk_project/jsk_management/who-dt_docs/whodt_hocr/'
-IMAGE_FILE_DIR = '/Users/jfenton/github-whitelabel/jsk_project/jsk_management/who-dt_docs/whodt_pages/'
-DOCUMENT_COLLECTION_SLUG = 'WHO-DT'
+#SAMPLE_FILE_DIR = '/Users/jfenton/github-whitelabel/jsk_project/jsk_management/who-dt_docs/whodt_hocr/'
+SAMPLE_FILE_DIR = '/Users/jfenton/github-whitelabel/jsk_project/jsk_management/ca_childcare_docs/page_scans/'
+DOCUMENT_COLLECTION_SLUG = 'CA-CHILDCARE'
+DOCUMENT_NAME_RE = re.compile("(.+?)\-p(\d+).html")
 
-DOCUMENT_NAME_RE = re.compile("(\d+)\-p(\d+).html")
 
 warning_message = """
 No html files were found to enter. You must download the hocr sample and unzip
@@ -32,8 +32,8 @@ http://pdf-liberation.s3.amazonaws.com/hocr_sample.zip
 """
 
 class Command(BaseCommand):
-    help = "test by loading a document"
-    requires_model_validation = False
+    help = "test by loading documents from the SAMPLE_FILE_DIR"
+    requires_system_checks = False
 
     def handle(self, *args, **options):
         
