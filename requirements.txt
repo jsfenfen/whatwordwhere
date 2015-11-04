@@ -1,9 +1,16 @@
 Django==1.8.5
 psycopg2
 # postgis
-geojson
-lxml
+geojson==1.3.1
+lxml==3.4.4
 # for hstore; may need to peg version, dunno.
 # docs here: http://djangonauts.github.io/django-hstore/ 
 # must run 'CREATE EXTENSION hstore;' in the db, or in template1 as per docs
-django-hstore
+django-hstore==1.4
+djangorestframework==3.3.1
+djangorestframework-csv==1.3.4
+
+# version correspondence for djangorestframeworkgis: https://github.com/djangonauts/django-rest-framework-gis#compatibility-with-drf-django-and-python
+
+djangorestframework-gis==0.9.6
+django-filter

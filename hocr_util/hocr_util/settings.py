@@ -38,6 +38,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'documents',
     'django_hstore',
+    'rest_framework',
+    'rest_framework_gis',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -124,6 +126,19 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
+REST_FRAMEWORK = {
+
+
+    'PAGINATE_BY': 100,
+    'PAGINATE_BY_PARAM': 'page_size',
+    'MAX_PAGINATE_BY': 100,
+    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    )
+    
+}
 
 # get everything else from local settings
 try:
