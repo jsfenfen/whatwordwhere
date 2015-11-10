@@ -137,8 +137,8 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
-    )
-    
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'api.pagination_extras.WWW_CursorPagination',
 }
 
 # from debug toolbar "explicit" setup: https://django-debug-toolbar.readthedocs.org/en/1.4/installation.html

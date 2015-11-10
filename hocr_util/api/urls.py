@@ -8,6 +8,7 @@ from api import views
 
 router = routers.DefaultRouter()
 router.register(r'page', views.PageViewSet)
+router.register(r'pageword', views.PageWordViewSet)
 
 
 urlpatterns = patterns('',

@@ -68,6 +68,8 @@ class Page(models.Model):
 class PageWord(models.Model):
     # to save time, we're not explicitly checking that page_pk is indeed a page primary key. But it should be.
     page_pk = models.IntegerField()
+    # collectino primary key. 
+    #collection_pk = models.IntegerField()
     text = models.CharField(max_length=755, blank=True, null=True)
     word_num = models.IntegerField(null=True)
     line_num = models.IntegerField(null=True)

@@ -1,7 +1,7 @@
 import django_filters
 
 from datetime import date, timedelta
-from documents.models import Page
+from documents.models import Page, PageWord
 
 # from django.db.models import Q
 
@@ -23,6 +23,12 @@ class PageFilter(django_filters.FilterSet):
         model = Page
         fields = ['doc', 'page_number', 'image', 'thumbnail']
 
+
+class PageWordFilter(django_filters.FilterSet):
+
+    class Meta:
+        model = PageWord
+        fields = ['page_pk', 'text', 'word_num', 'line_num', 'poly']
 
 def OrderingFilter(queryset, querydict, fields):
     """

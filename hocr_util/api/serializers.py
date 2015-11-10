@@ -1,4 +1,4 @@
-from documents.models import Page
+from documents.models import Page, PageWord
 from rest_framework_gis import serializers
 
 
@@ -11,9 +11,17 @@ class PageSerializer(serializers.ModelSerializer):
 
 """
 
-class PageSerializer(gis_serializers.GeoFeatureModelSerializer):
+class PageSerializer(serializers.GeoFeatureModelSerializer):
 
     class Meta:
         model = Page
-        geo_field = "page_dimensions"
+        geo_field = 'page_dimensions'
         fields = ('page_number', 'image', 'thumbnail', 'doc', 'page_dimensions')
+
+
+class PageWordSerializer(serializers.GeoFeatureModelSerializer):
+
+    class Meta:
+        model = PageWord
+        geo_field = 'poly'
+        fields = ('page_pk', 'text', 'word_num', 'line_num', 'poly')
