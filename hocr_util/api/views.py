@@ -28,6 +28,8 @@ class alternatelypaginatedviewset(viewsets.ReadOnlyModelViewSet):
 
 page_orderable_fields = ['page_number']
 
+
+
 class PageViewSet(alternatelypaginatedviewset):
     """
     API endpoint that allows new filings to be viewed.

@@ -40,9 +40,11 @@ INSTALLED_APPS = (
     'django_hstore',
     'rest_framework',
     'rest_framework_gis',
+    'debug_toolbar',
 )
 
 MIDDLEWARE_CLASSES = (
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -122,7 +124,6 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
@@ -139,6 +140,12 @@ REST_FRAMEWORK = {
     )
     
 }
+
+# from debug toolbar "explicit" setup: https://django-debug-toolbar.readthedocs.org/en/1.4/installation.html
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
+INTERNAL_IPS = ('127.0.0.1',)
+
+
 
 # get everything else from local settings
 try:
