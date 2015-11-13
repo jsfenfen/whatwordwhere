@@ -75,7 +75,7 @@ class PageWord(models.Model):
     line_num = models.IntegerField(null=True)
     ## bbox should be of the form 
     bbox = models.CharField(max_length=31, blank=True, null=True)
-    poly = models.PolygonField(null=True, spatial_index=False, srid=97589)
+    poly = models.PolygonField(null=True, spatial_index=False, srid=-1)
     # we don't create a spatial index initially. Manage this by hand, because this will kill our inserts otherwise.
     objects = models.GeoManager()
     

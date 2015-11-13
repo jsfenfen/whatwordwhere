@@ -17,7 +17,7 @@ class PageSerializer(serializers.GeoFeatureModelSerializer):
         model = Page
         geo_field = 'page_dimensions'
         fields = ('page_number', 'image', 'thumbnail', 'doc', 'page_dimensions')
-
+        # pass the overall page size as the "bounding box" 
 
 class PageWordSerializer(serializers.GeoFeatureModelSerializer):
 
