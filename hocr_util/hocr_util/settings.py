@@ -41,11 +41,13 @@ INSTALLED_APPS = (
     'rest_framework',
     'rest_framework_gis',
     'debug_toolbar',
+    'corsheaders',
 )
 
 MIDDLEWARE_CLASSES = (
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -110,7 +112,7 @@ TEMPLATE_DIRS = (
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
-
+STATIC_ROOT = ''
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -145,7 +147,10 @@ REST_FRAMEWORK = {
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
 INTERNAL_IPS = ('127.0.0.1',)
 
-
+# cors: https://github.com/ottoyiu/django-cors-headers
+CORS_ORIGIN_ALLOW_ALL = True
+# could also be:
+#     CORS_ORIGIN_REGEX_WHITELIST = ('^(https?://)?(\w+\.)?google\.com$', )
 
 # get everything else from local settings
 try:
