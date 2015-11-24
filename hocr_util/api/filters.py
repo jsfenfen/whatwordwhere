@@ -31,7 +31,7 @@ class PageFilter(django_filters.FilterSet):
 
     class Meta:
         model = Page
-        fields = ['doc', 'page_number', 'image', 'thumbnail']
+        fields = ['id', 'doc', 'page_number', 'image', 'thumbnail']
 
 
 class PageWordFilter(GeoFilterSet):
@@ -40,7 +40,7 @@ class PageWordFilter(GeoFilterSet):
     
     class Meta:
         model = PageWord
-        fields = ['page_pk', 'text', 'word_num', 'line_num', 'poly']
+        fields = ['id', 'page_pk', 'text', 'word_num', 'line_num', 'poly']
 
 def OrderingFilter(queryset, querydict, fields):
     """
