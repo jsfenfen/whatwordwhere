@@ -18,9 +18,11 @@ SAMPLE_FILE_DIR = 'parser/hocr_sample/'
 # Because this could take seriously long
 FILE_ENTRY_CAP = 1000000
 
-#SAMPLE_FILE_DIR = '/Users/jfenton/github-whitelabel/jsk_project/jsk_management/who-dt_docs/whodt_hocr/'
-SAMPLE_FILE_DIR = '/Users/jfenton/github-whitelabel/jsk_project/jsk_management/ca_childcare_docs/page_scans/'
-DOCUMENT_COLLECTION_SLUG = 'CA-CHILDCARE'
+SAMPLE_FILE_DIR = '/Users/jfenton/github-whitelabel/jsk_project/jsk_management/who-dt_docs/whodt_hocr/'
+#SAMPLE_FILE_DIR = '/Users/jfenton/github-whitelabel/jsk_project/jsk_management/wmur_docs/wmur_hocr/'
+
+#SAMPLE_FILE_DIR = '/Users/jfenton/github-whitelabel/jsk_project/jsk_management/ca_childcare_docs/page_scans/'
+DOCUMENT_COLLECTION_SLUG = 'WHO-DT'
 DOCUMENT_NAME_RE = re.compile("(.+?)\-p(\d+).html")
 
 

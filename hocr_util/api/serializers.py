@@ -23,15 +23,18 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
                 self.fields.pop(field_name)
 
 
-# We can pass a fields param in to show which fields we want, but! 'id' and 'page_dimensions' are required
+# We can pass a fields param in to show which fields we want, but! 'id' and 'page_dimensions' are required to be output
 # id is used for cursor-based pagination; geo stuff needs page_dimensions
 class PageSerializer(serializers.GeoFeatureModelSerializer, DynamicFieldsModelSerializer):
     text_start = base_serializers.SerializerMethodField('get_the_text_start')
+    
+    absolute_url = base_serializers.ReadOnlyField(source='get_absolute_url')
+    geojson_url = base_serializers.ReadOnlyField(source='get_geojson_url')
 
     class Meta:
         model = Page
         geo_field = 'page_dimensions'
-        fields = ('id', 'page_number', 'image', 'thumbnail', 'doc', 'page_dimensions', 'text_start')
+        fields = ('id', 'page_number', 'image', 'thumbnail', 'doc', 'page_dimensions', 'text_start', 'absolute_url', 'geojson_url')
         # pass the overall page size as the "bounding box" 
     
     def get_the_text_start(self,obj):

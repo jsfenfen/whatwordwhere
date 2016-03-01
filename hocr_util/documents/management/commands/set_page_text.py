@@ -7,7 +7,7 @@ from StringIO import StringIO
 from django.core.management.base import BaseCommand, CommandError
 from documents.models import PageWord, Page, Document_Collection
 
-COLLECTION_SLUG = 'CA-CHILDCARE'
+COLLECTION_SLUG = 'WHO-DT'
 
 
 class Command(BaseCommand):

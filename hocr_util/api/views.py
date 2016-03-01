@@ -36,7 +36,7 @@ class PageViewSet(alternatelypaginatedviewset):
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES + [PaginatedCSVRenderer] 
 
     # processing the header makes most of these not zero. 
-    queryset = Page.objects.all()
+    queryset = Page.objects.all().select_related('doc', 'doc__document_collection')
     serializer_class = PageSerializer
     filter_class = PageFilter
     

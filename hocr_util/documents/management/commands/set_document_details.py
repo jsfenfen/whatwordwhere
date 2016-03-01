@@ -4,7 +4,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from documents.models import Document, Page
 
-COLLECTION_SLUG = 'CA-CHILDCARE'
+COLLECTION_SLUG = 'WHO-DT'
 
 class Command(BaseCommand):
     help = "set image urls"
